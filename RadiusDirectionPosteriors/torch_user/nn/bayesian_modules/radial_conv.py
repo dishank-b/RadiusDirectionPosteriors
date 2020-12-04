@@ -4,12 +4,12 @@ from operator import mul
 
 import torch
 from torch.nn import functional as F
-from BayesianNeuralNetwork.torch_user.nn.bayesian_modules.radial_module import RadialModule
-from BayesianNeuralNetwork.torch_user.nn.reparametrized_sampler.von_mises_fisher import VonMisesFisherReparametrizedSample
-from BayesianNeuralNetwork.torch_user.nn.reparametrized_sampler.gamma import GammaReparametrizedSample
-from BayesianNeuralNetwork.torch_user.nn.reparametrized_sampler.weibull import WeibullReparametrizedSample
-from BayesianNeuralNetwork.torch_user.nn.reparametrized_sampler.lognormal import LognormalReparametrizedSample
-from BayesianNeuralNetwork.torch_user.nn.reparametrized_sampler.normal import NormalReparametrizedSample
+from torch_user.nn.bayesian_modules.radial_module import RadialModule
+from torch_user.nn.reparametrized_sampler.von_mises_fisher import VonMisesFisherReparametrizedSample
+from torch_user.nn.reparametrized_sampler.gamma import GammaReparametrizedSample
+from torch_user.nn.reparametrized_sampler.weibull import WeibullReparametrizedSample
+from torch_user.nn.reparametrized_sampler.lognormal import LognormalReparametrizedSample
+from torch_user.nn.reparametrized_sampler.normal import NormalReparametrizedSample
 
 
 def _ntuple(n):
@@ -35,7 +35,8 @@ class _RadialConvNd(RadialModule):
         self.out_channels = out_channels
         # each filter is group
         self.batch_shape = torch.Size([out_channels])
-        self.event_shape = torch.Size([in_channels * reduce(mul, kernel_size)])
+        # self.event_shape = torch.Size([in_channels * reduce(mul, kernel_size)])
+        self.event_shape = torch.Size([in_channels * mul(*kernel_size)])
         # all filter to a out channel is group
         self.weight_shape = torch.Size([out_channels, in_channels]) + kernel_size
         self.register_buffer('batch_ones', torch.ones(self.batch_shape))

@@ -4,9 +4,9 @@ import matplotlib.pyplot as plt
 
 import torch
 
-from BayesianNeuralNetwork.compress import FIG_SAVE_DIR, double_layer_logmode_mask, prior_info_from_json
-from BayesianNeuralNetwork.compress import load_data, load_model, nonzero_ratio_lenetfc
-from BayesianNeuralNetwork.utils.dir_utils import exp_dir
+from compress import FIG_SAVE_DIR, double_layer_logmode_mask, prior_info_from_json
+from compress import load_data, load_model, nonzero_ratio_lenetfc
+from utils.dir_utils import exp_dir
 
 
 def evaluate_with_prunning(model, train_loader_eval, valid_loader, test_loader, row_threshold, col_threshold, tag):

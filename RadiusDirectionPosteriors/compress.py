@@ -11,8 +11,8 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import torch.cuda as cuda
-from BayesianNeuralNetwork.utils.dir_utils import exp_dir
-from vgg16_bn_init import load_vgg16_bn_to_double, load_vgg16_bn_to_radial
+from utils.dir_utils import exp_dir
+# from vgg16_bn_init import load_vgg16_bn_to_double, load_vgg16_bn_to_radial
 
 
 HOSTNAME = socket.gethostname()
@@ -195,19 +195,19 @@ def load_model(model_type, prior_info, use_gpu):
 		module = importlib.import_module('BayesianNeuralNetwork.models.' + ('vgg_double' if is_double_layer else 'vgg'))
 		model = getattr(module, class_name)(prior_info=prior_info)
 	elif model_type == 'LeNet5-Flatten':
-		from BayesianNeuralNetwork.models.lenet_conv_double_flatten import LeNet5DoubleFlatten
+		from models.lenet_conv_double_flatten import LeNet5DoubleFlatten
 		model = LeNet5DoubleFlatten(prior_info=prior_info)
 	elif model_type == 'LeNet5-Bundle':
-		from BayesianNeuralNetwork.models.lenet_conv_double_bundle import LeNet5DoubleBundle
+		from models.lenet_conv_double_bundle import LeNet5DoubleBundle
 		model = LeNet5DoubleBundle(prior_info=prior_info)
 	elif model_type == 'LeNet5':
-		from BayesianNeuralNetwork.models.lenet_conv import LeNet5
+		from models.lenet_conv import LeNet5
 		model = LeNet5(prior_info=prior_info)
 	elif model_type == 'LeNetFC-Double':
-		from BayesianNeuralNetwork.models.lenet_fc_double import LeNetFCDouble
+		from models.lenet_fc_double import LeNetFCDouble
 		model = LeNetFCDouble(prior_info=prior_info)
 	elif model_type == 'LeNetFC':
-		from BayesianNeuralNetwork.models.lenet_fc import LeNetFC
+		from models.lenet_fc import LeNetFC
 		model = LeNetFC(prior_info=prior_info)
 	else:
 		raise NotImplementedError
@@ -218,10 +218,10 @@ def load_model(model_type, prior_info, use_gpu):
 
 def load_data(data_type, batch_size, num_workers, use_gpu):
 	if data_type == 'MNIST':
-		from BayesianNeuralNetwork.data_loaders.mnist import data_loader
+		from data_loaders.mnist import data_loader
 		train_loader, valid_loader, test_loader, train_loader_eval = data_loader(batch_size=batch_size, num_workers=num_workers, use_gpu=use_gpu, validation=True)
 	elif data_type == 'CIFAR10':
-		from BayesianNeuralNetwork.data_loaders.cifar10 import data_loader
+		from data_loaders.cifar10 import data_loader
 		train_loader, valid_loader, test_loader, train_loader_eval = data_loader(batch_size=batch_size, num_workers=num_workers, use_gpu=use_gpu, validation=True)
 	return train_loader, valid_loader, test_loader, train_loader_eval
 
@@ -350,7 +350,8 @@ def multinomial_statistics(pred_samples):
 
 
 def prior_info_from_json(prior_filepath):
-	prior_filepath = os.path.join('/'.join(os.path.split(__file__)[0].split('/')[:-1] + ['prior_json']), os.path.split(prior_filepath)[1])
+	# prior_filepath = os.path.join('/'.join(os.path.split(__file__)[0].split('/')[:-1] + ['prior_json']), os.path.split(prior_filepath)[1])
+	prior_filepath = os.path.join('/'.join(os.path.split(__file__)[0].split('/')[:-1]), os.path.split(prior_filepath)[1])
 	json_file = open(prior_filepath)
 	prior_dict = json.load(json_file)
 	json_file.close()

@@ -1,8 +1,11 @@
 import math
 import argparse
+import sys
 
-from BayesianNeuralNetwork.torch_user.nn.utils import softplus_inv
-from BayesianNeuralNetwork.compress import train_continue, train_initiate, prior_info_from_json
+print(sys.path)
+
+from torch_user.nn.utils import softplus_inv
+from compress import train_continue, train_initiate, prior_info_from_json
 
 
 INIT_HYPER = {'vMF': {'direction': 'kaiming',

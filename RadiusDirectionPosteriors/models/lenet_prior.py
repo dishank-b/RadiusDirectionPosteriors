@@ -1,5 +1,5 @@
-from BayesianNeuralNetwork.models.utils import double_prior_summary, prior_summary
-from BayesianNeuralNetwork.torch_user.nn.utils import ml_kappa
+from models.utils import double_prior_summary, prior_summary
+from torch_user.nn.utils import ml_kappa
 
 
 PRIOR_EPSILON = 0.1

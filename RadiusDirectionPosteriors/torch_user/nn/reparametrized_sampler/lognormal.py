@@ -4,8 +4,8 @@ from numbers import Number
 import torch
 from torch.nn import Parameter
 from torch.nn.functional import softplus
-from BayesianNeuralNetwork.torch_user.nn.reparametrized_sampler.reparametrized_sample import ReparametrizedSample
-from BayesianNeuralNetwork.torch_user.nn.utils import softplus_inv
+from torch_user.nn.reparametrized_sampler.reparametrized_sample import ReparametrizedSample
+from torch_user.nn.utils import softplus_inv
 
 
 class LognormalReparametrizedSample(ReparametrizedSample):

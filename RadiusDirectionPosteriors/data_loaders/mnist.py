@@ -1,6 +1,6 @@
 import os
 
-from BayesianNeuralNetwork.data_loaders import DATA_DIR
+from data_loaders import DATA_DIR
 
 import torch
 import torch.utils.data

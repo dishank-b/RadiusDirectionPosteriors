@@ -1,7 +1,7 @@
 import torch
 from torch.nn import Module
 from torch.nn.functional import softplus
-from BayesianNeuralNetwork.torch_user.kl_divergence import KL_vMF_kappa, KL_Gamma, KL_Weibull, KL_LogNormal_Gamma, KL_LogNormal_invGamma, KL_Normal
+from torch_user.kl_divergence import KL_vMF_kappa, KL_Gamma, KL_Weibull, KL_LogNormal_Gamma, KL_LogNormal_invGamma, KL_Normal
 
 
 class RadialModule(Module):

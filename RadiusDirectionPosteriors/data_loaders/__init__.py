@@ -1,1 +1,1 @@
-from BayesianNeuralNetwork.utils.dir_utils import DATA_DIR
+from utils.dir_utils import DATA_DIR

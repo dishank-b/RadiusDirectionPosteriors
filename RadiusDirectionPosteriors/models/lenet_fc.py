@@ -1,9 +1,9 @@
 import torch
 import torch.nn as nn
 
-from BayesianNeuralNetwork.models.model import BayesianModel
-from BayesianNeuralNetwork.torch_user.nn.bayesian_modules.radial_linear import RadialLinear
-from BayesianNeuralNetwork.models.lenet_prior import LeNetFCPrior
+from models.model import BayesianModel
+from torch_user.nn.bayesian_modules.radial_linear import RadialLinear
+from models.lenet_prior import LeNetFCPrior
 
 
 class LeNetFC(BayesianModel):

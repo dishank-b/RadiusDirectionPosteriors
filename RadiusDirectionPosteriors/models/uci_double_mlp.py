@@ -2,11 +2,11 @@ import torch
 import torch.nn as nn
 from torch.nn.functional import softplus
 
-from BayesianNeuralNetwork.models.model import BayesianModel
-from BayesianNeuralNetwork.models.utils import double_prior_summary
-from BayesianNeuralNetwork.torch_user.nn.bayesian_modules.double_radial_linear import DoubleRadialLinear
-from BayesianNeuralNetwork.torch_user.kl_divergence import KL_Gamma
-from BayesianNeuralNetwork.torch_user.nn.utils import ml_kappa, softplus_inv
+from models.model import BayesianModel
+from models.utils import double_prior_summary
+from torch_user.nn.bayesian_modules.double_radial_linear import DoubleRadialLinear
+from torch_user.kl_divergence import KL_Gamma
+from torch_user.nn.utils import ml_kappa, softplus_inv
 
 
 PRIOR_EPSILON = 0.5

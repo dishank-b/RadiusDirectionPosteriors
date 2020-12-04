@@ -1,10 +1,10 @@
 import torch
 import torch.nn as nn
 
-from BayesianNeuralNetwork.models.model import BayesianModel
-from BayesianNeuralNetwork.torch_user.nn.bayesian_modules.double_radial_conv2d_bundle import DoubleRadialConv2dBundle
-from BayesianNeuralNetwork.torch_user.nn.bayesian_modules.double_radial_linear import DoubleRadialLinear
-from BayesianNeuralNetwork.models.lenet_prior import LeNet5DoublePrior
+from models.model import BayesianModel
+from torch_user.nn.bayesian_modules.double_radial_conv2d_bundle import DoubleRadialConv2dBundle
+from torch_user.nn.bayesian_modules.double_radial_linear import DoubleRadialLinear
+from models.lenet_prior import LeNet5DoublePrior
 
 
 class LeNet5DoubleBundle(BayesianModel):

@@ -8,7 +8,7 @@ import numpy as np
 import torch
 import torch.cuda
 
-from BayesianNeuralNetwork.utils.dir_utils import EXP_DIR
+from utils.dir_utils import EXP_DIR
 
 EXP_INFO = ['data_type', 'gan_type', 'n_latent', 'in_h', 'in_w', 'n_ch_img', 'n_ch_base', 'max_gen_update', 'n_dis', 'lr', 'beta2', 'beta1', 'lambda_reg', 'spectrum_deviance']
 _STR_FORMAT_DICT = {int: '%d', float: '%8.6f', str: '%s'}
@@ -131,19 +131,19 @@ def model_init_mixed(model):
 
 def dataloader_and_info(data_type, batch_size, num_workers):
     if data_type == 'CIFAR10':
-        from BayesianNeuralNetwork.data_loaders.cifar10 import data_loader
+        from data_loaders.cifar10 import data_loader
         n_ch_img, in_h, in_w, n_category = 3, 32, 32, 10
     elif data_type == 'CIFAR100':
-        from BayesianNeuralNetwork.data_loaders.cifar100 import data_loader
+        from data_loaders.cifar100 import data_loader
         n_ch_img, in_h, in_w, n_category = 3, 32, 32, 100
     elif data_type == 'STL10':
-        from BayesianNeuralNetwork.data_loaders.stl10 import data_loader
+        from data_loaders.stl10 import data_loader
         n_ch_img, in_h, in_w, n_category = 3, 32, 32, 10 # Resized, originally 96, 96
     elif data_type == 'MNIST':
-        from BayesianNeuralNetwork.data_loaders.mnist import data_loader
+        from data_loaders.mnist import data_loader
         n_ch_img, in_h, in_w, n_category = 1, 28, 28, 10
     elif data_type == 'FashionMNIST':
-        from BayesianNeuralNetwork.data_loaders.fashionmnist import data_loader
+        from data_loaders.fashionmnist import data_loader
         n_ch_img, in_h, in_w, n_category = 1, 28, 28, 10
     else:
         raise NotImplementedError

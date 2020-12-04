@@ -12,11 +12,11 @@ import torch.optim as optim
 import torch.cuda as cuda
 from torch.nn.functional import softplus
 
-from BayesianNeuralNetwork.data_loaders.uci_regression import data_loader
-from BayesianNeuralNetwork.models.uci_double_mlp import UCIFCRadial
-from BayesianNeuralNetwork.data_loaders.uci_regression import architecture_info
+from data_loaders.uci_regression import data_loader
+from models.uci_double_mlp import UCIFCRadial
+from data_loaders.uci_regression import architecture_info
 
-from BayesianNeuralNetwork.torch_user.nn.utils import softplus_inv
+from torch_user.nn.utils import softplus_inv
 
 
 HOSTNAME = socket.gethostname()

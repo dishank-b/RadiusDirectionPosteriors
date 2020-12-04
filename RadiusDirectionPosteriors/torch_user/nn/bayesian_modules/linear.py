@@ -3,10 +3,10 @@ import torch.nn as nn
 from torch.nn import functional as F
 from torch.nn.functional import softplus
 
-from BayesianNeuralNetwork.torch_user.nn.reparametrized_sampler.normal import NormalReparametrizedSample
+from torch_user.nn.reparametrized_sampler.normal import NormalReparametrizedSample
 
 
-from BayesianNeuralNetwork.torch_user.kl_divergence import KL_Normal
+from torch_user.kl_divergence import KL_Normal
 
 
 class Linear(nn.Module):

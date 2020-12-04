@@ -6,8 +6,8 @@ from torch.distributions import Beta
 from torch.nn import Parameter
 from torch.nn.functional import softplus
 from torch.autograd import grad
-from BayesianNeuralNetwork.torch_user.nn.reparametrized_sampler.reparametrized_sample import ReparametrizedSample
-from BayesianNeuralNetwork.torch_user.nn.utils import ml_kappa, softplus_inv, softplus_inv_derivative, kaiming_transpose
+from torch_user.nn.reparametrized_sampler.reparametrized_sample import ReparametrizedSample
+from torch_user.nn.utils import ml_kappa, softplus_inv, softplus_inv_derivative, kaiming_transpose
 
 EPSILON = 0.005
 

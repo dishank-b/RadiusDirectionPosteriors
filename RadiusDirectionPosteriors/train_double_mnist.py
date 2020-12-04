@@ -13,7 +13,7 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.cuda as cuda
 
-from BayesianNeuralNetwork.torch_user.nn.utils import softplus_inv
+from torch_user.nn.utils import softplus_inv
 
 HOSTNAME = socket.gethostname()
 if HOSTNAME == 'hekla':
@@ -111,11 +111,11 @@ def train_continue(model_filename, n_epoch, n_pred_samples, num_workers=4, use_g
 
 def load_data(data_type, batch_size, num_workers, use_gpu):
     if data_type == 'MNIST':
-        from BayesianNeuralNetwork.data_loaders.mnist import data_loader
+        from data_loaders.mnist import data_loader
         train_loader, valid_loader, test_loader, train_loader_eval = data_loader(batch_size=batch_size, num_workers=num_workers, use_gpu=use_gpu)
         return train_loader, valid_loader, test_loader, train_loader_eval
     elif data_type == 'FashionMNIST':
-        from BayesianNeuralNetwork.data_loaders.fashionmnist import data_loader
+        from data_loaders.fashionmnist import data_loader
         train_loader, valid_loader, test_loader, train_loader_eval = data_loader(batch_size=batch_size, num_workers=num_workers, use_gpu=use_gpu)
         return train_loader, valid_loader, test_loader, train_loader_eval
     else:
@@ -124,10 +124,10 @@ def load_data(data_type, batch_size, num_workers, use_gpu):
 
 def load_model(model_type, prior_type, use_gpu):
     if model_type in ['MNISTDOUBLEFC3_150', 'MNISTDOUBLEFC3_250', 'MNISTDOUBLEFC3_500', 'MNISTDOUBLEFC3_750']:
-        from BayesianNeuralNetwork.models.mnist_double_mlp import MNISTDOUBLEFC3
+        from models.mnist_double_mlp import MNISTDOUBLEFC3
         model = MNISTDOUBLEFC3(prior_type=prior_type, n_hidden=int(model_type[-3:]))
     elif model_type in ['MNISTDOUBLEFC2_150', 'MNISTDOUBLEFC2_400']:
-        from BayesianNeuralNetwork.models.mnist_double_mlp import MNISTDOUBLEFC2
+        from models.mnist_double_mlp import MNISTDOUBLEFC2
         model = MNISTDOUBLEFC2(prior_type=prior_type, n_hidden=int(model_type[-3:]))
     if use_gpu:
         model.cuda()

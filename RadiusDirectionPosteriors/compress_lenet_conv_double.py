@@ -5,9 +5,9 @@ matplotlib.use('agg')
 import matplotlib.pyplot as plt
 import torch
 
-from BayesianNeuralNetwork.compress import double_layer_logmode_mask, FIG_SAVE_DIR, prior_info_from_json
-from BayesianNeuralNetwork.compress import load_data, load_model, nonzero_ratio_lenet5
-from BayesianNeuralNetwork.utils.dir_utils import exp_dir
+from compress import double_layer_logmode_mask, FIG_SAVE_DIR, prior_info_from_json
+from compress import load_data, load_model, nonzero_ratio_lenet5
+from utils.dir_utils import exp_dir
 
 
 def evaluate_with_prunning(model, train_loader_eval, valid_loader, test_loader, row_threshold, col_threshold, tag):
