@@ -7,6 +7,8 @@ print(sys.path)
 from torch_user.nn.utils import softplus_inv
 from compress import train_continue, train_initiate, prior_info_from_json
 
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning)
 
 INIT_HYPER = {'vMF': {'direction': 'kaiming',
                       'softplus_inv_concentration_normal_mean_via_epsilon': 0.1,
