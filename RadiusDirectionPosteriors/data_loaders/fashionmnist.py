@@ -7,7 +7,7 @@ import torchvision
 import torchvision.transforms as transforms
 
 
-def data_loader(batch_size=32, num_workers=4, use_gpu=False):
+def data_loader(batch_size=32, num_workers=4, use_gpu=False, validation=True):
     normalization_coef = ((0.1307,), (0.3081,)) # given in pytorch example
     transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(*normalization_coef)])
 
