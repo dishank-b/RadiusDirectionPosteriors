@@ -4,7 +4,7 @@ import numpy as np
 import torch
 import torch.utils.data
 
-DATA_DIR = '/is/ei/com/git_repositories/DropoutUncertaintyExps/UCI_Datasets'
+DATA_DIR = '/home/dishank/RadiusDirectionPosteriors/datasets/DropoutUncertaintyExps/UCI_Datasets'
 # dirname, n_in, n_hidden
 BOSTON = os.path.join(DATA_DIR, 'bostonHousing'), 13, 50
 CONCRETE = os.path.join(DATA_DIR, 'concrete'), 8, 50

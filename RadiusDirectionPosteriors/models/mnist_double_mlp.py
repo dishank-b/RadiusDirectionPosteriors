@@ -6,7 +6,7 @@ from torch.nn.functional import softplus
 
 from models.model import BayesianModel
 from torch_user.nn.bayesian_modules.double_radial_linear import DoubleRadialLinear
-from models.utils import double_prior_summary
+from models.utils import double_prior_summary, prior_summary
 from torch_user.nn.utils import ml_kappa, softplus_inv
 
 

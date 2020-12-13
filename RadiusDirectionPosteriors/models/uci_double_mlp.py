@@ -69,18 +69,22 @@ class UCIFCRadialPrior(object):
             self._prior_halfcauchy()
         else:
             raise NotImplementedError
-        self.fc1_prior['direction'] = ('vMF', {'row_softplus_inv_concentration': softplus_inv(ml_kappa(dim=n1, eps=PRIOR_EPSILON)),
-                                               'col_softplus_inv_concentration': softplus_inv(ml_kappa(dim=n2, eps=PRIOR_EPSILON))})
-        self.fc2_prior['direction'] = ('vMF', {'row_softplus_inv_concentration': softplus_inv(ml_kappa(dim=n2, eps=PRIOR_EPSILON)),
-                                               'col_softplus_inv_concentration': softplus_inv(ml_kappa(dim=1, eps=PRIOR_EPSILON))})
+        # self.fc1_prior['direction'] = ('vMF', {'row_softplus_inv_concentration': softplus_inv(ml_kappa(dim=n1, eps=PRIOR_EPSILON)),
+        #                                        'col_softplus_inv_concentration': softplus_inv(ml_kappa(dim=n2, eps=PRIOR_EPSILON))})
+        # self.fc2_prior['direction'] = ('vMF', {'row_softplus_inv_concentration': softplus_inv(ml_kappa(dim=n2, eps=PRIOR_EPSILON)),
+        #                                        'col_softplus_inv_concentration': softplus_inv(ml_kappa(dim=1, eps=PRIOR_EPSILON))})
+        self.fc1_prior['direction'] = ('vMF', {'row_concentration': softplus_inv(ml_kappa(dim=n1, eps=PRIOR_EPSILON)),
+                                               'col_concentration': softplus_inv(ml_kappa(dim=n2, eps=PRIOR_EPSILON))})
+        self.fc2_prior['direction'] = ('vMF', {'row_concentration': softplus_inv(ml_kappa(dim=n2, eps=PRIOR_EPSILON)),
+                                               'col_concentration': softplus_inv(ml_kappa(dim=1, eps=PRIOR_EPSILON))})
 
     def __call__(self):
         return self.fc1_prior, self.fc2_prior
 
     def __repr__(self):
         prior_info_str_list = ['***PRIORS***']
-        prior_info_str_list.append('FC1 : ' + double_prior_summary(self.fc1_prior))
-        prior_info_str_list.append('FC2 : ' + double_prior_summary(self.fc2_prior))
+        # prior_info_str_list.append('FC1 : ' + double_prior_summary(self.fc1_prior))
+        # prior_info_str_list.append('FC2 : ' + double_prior_summary(self.fc2_prior))
         return '\n'.join(prior_info_str_list)
 
     def _prior_gamma(self):
