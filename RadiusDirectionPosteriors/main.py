@@ -7,6 +7,8 @@ print(sys.path)
 from torch_user.nn.utils import softplus_inv
 from compress import train_continue, train_initiate, prior_info_from_json
 
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning)
 
 INIT_HYPER = {'vMF': {'direction': 'kaiming',
                       'softplus_inv_concentration_normal_mean_via_epsilon': 0.1,
@@ -34,13 +36,14 @@ if __name__ == '__main__':
 	parser.add_argument('--model_file', dest='model_file', help='Continue training')
 	parser.add_argument('--load_pretrain', dest='load_pretrain', default=None,
 	                    help='Load a pretrained model')
+	parser.add_argument('--data', dest='data', type=str, default="MNIST")
 
 	args = parser.parse_args()
 	arg_dict = vars(args)
 	print(arg_dict)
 	if 'LeNet' in args.model_type:
 		assert not args.load_pretrain
-		data_type = 'MNIST'
+		data_type = args.data
 		INIT_HYPER['LogNormal']['mu_normal_mean'] = math.log(2.0 ** (1.0 / 1.0))
 	elif 'VGG' in args.model_type:
 		data_type = 'CIFAR10'

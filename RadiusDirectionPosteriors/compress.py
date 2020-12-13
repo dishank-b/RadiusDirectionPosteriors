@@ -230,6 +230,9 @@ def load_data(data_type, batch_size, num_workers, use_gpu):
 	if data_type == 'MNIST':
 		from data_loaders.mnist import data_loader
 		train_loader, valid_loader, test_loader, train_loader_eval = data_loader(batch_size=batch_size, num_workers=num_workers, use_gpu=use_gpu, validation=True)
+	elif data_type == 'FashionMNIST':
+		from data_loaders.fashionmnist import data_loader
+		train_loader, valid_loader, test_loader, train_loader_eval = data_loader(batch_size=batch_size, num_workers=num_workers, use_gpu=use_gpu, validation=True)		
 	elif data_type == 'CIFAR10':
 		from data_loaders.cifar10 import data_loader
 		train_loader, valid_loader, test_loader, train_loader_eval = data_loader(batch_size=batch_size, num_workers=num_workers, use_gpu=use_gpu, validation=True)
