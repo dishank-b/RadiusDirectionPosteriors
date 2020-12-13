@@ -16,10 +16,7 @@ import torch.cuda as cuda
 from torch_user.nn.utils import softplus_inv
 
 HOSTNAME = socket.gethostname()
-if HOSTNAME == 'hekla':
-    SAVE_DIR = '/is/ei/com/Experiments/BayesianNeuralNetwork'
-else:  # Any other machine in MPI Tuebingen
-    SAVE_DIR = '/home/com/Experiments/BayesianNeuralNetwork'
+SAVE_DIR = "/home/dishank/RadiusDirectionPosteriors/logs"
 assert os.path.exists(SAVE_DIR)
 MODEL_FILENAME = lambda filename_prefix: os.path.join(SAVE_DIR, filename_prefix + '.pkl')
 OPTIM_FILENAME = lambda filename_prefix: os.path.join(SAVE_DIR, filename_prefix + '_optim.pkl')

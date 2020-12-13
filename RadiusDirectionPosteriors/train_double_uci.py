@@ -20,11 +20,9 @@ from torch_user.nn.utils import softplus_inv
 
 
 HOSTNAME = socket.gethostname()
-if HOSTNAME == 'hekla':
-    SAVE_DIR = '/is/ei/com/Experiments/BayesianNeuralNetwork'
-else:  # Any other machine in MPI Tuebingen
-    SAVE_DIR = '/home/com/Experiments/BayesianNeuralNetwork'
+SAVE_DIR = "/home/dishank/RadiusDirectionPosteriors/logs"
 assert os.path.exists(SAVE_DIR)
+
 UCI_DATA = ['BOSTON', 'CONCRETE', 'ENERGY', 'KIN8NM', 'NAVAL', 'POWERPLANT', 'PROTEIN', 'WINE', 'YACHT', 'YEAR']
 MODEL_FILENAME = lambda filename_prefix: os.path.join(SAVE_DIR, filename_prefix + '.pkl')
 OPTIM_FILENAME = lambda filename_prefix: os.path.join(SAVE_DIR, filename_prefix + '_optim.pkl')
@@ -184,7 +182,7 @@ def evaluate(model, train_loader_eval, test_loader, normalization_info, n_pred_s
                              precision_noise_rate=softplus(model.obs_precision_softplus_inv_rate))
     logging = '\n------------------'
     logging += '\n' + model.init_hyperparam_value()
-    logging += '\n' + model.prior.__repr__()
+    # logging += '\n' + model.prior.__repr__()
     logging += ('\nTrain output mean prediction %6.4f' % float( torch.mean((test_outputs - torch.mean(train_outputs)) ** 2) ** 0.5 * normalization_info['output std']))
     logging += ('\nTrain(%d samples) RMSE : %6.4f / LL : %+6.4f' % (n_pred_samples, train_rmse, train_ll))
     logging += ('\nTest (%d samples) RMSE : %6.4f / LL : %+6.4f' % (n_pred_samples, test_rmse, test_ll))

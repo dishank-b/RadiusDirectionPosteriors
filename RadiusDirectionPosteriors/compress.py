@@ -12,6 +12,7 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.cuda as cuda
 from utils.dir_utils import exp_dir
+from utils.evaluator import Evaluator
 # from vgg16_bn_init import load_vgg16_bn_to_double, load_vgg16_bn_to_radial
 
 
@@ -103,6 +104,7 @@ def train(model, optimizer, train_loader, begin_step, epoch_begin, epoch_end, be
 	print(train_info)
 	print(model_prior_info)
 	logging = train_info + '\n' + model_prior_info + '\n'
+	evaluator = Evaluator()
 
 	criterion = nn.CrossEntropyLoss(size_average=True)
 
@@ -157,24 +159,32 @@ def train(model, optimizer, train_loader, begin_step, epoch_begin, epoch_end, be
 			running_kld = running_rate * float(kld) + (1 - running_rate) * running_kld
 			running_loss = running_rate * float(loss) + (1 - running_rate) * running_loss
 
-		log_str = '%s [%6d steps in (%4d epochs) ] loss: %.6f, xentropy: %.6f, regularizer: %.6f, beta:%.3E, %s' % \
-		          (datetime.now().strftime("%H:%M:%S.%f"), n_step, e + 1, running_loss, running_xent, running_kld, beta, train_info)
+		train_acc, valid_acc, test_acc, eval_str, test_kld, test_nll = evaluate(model, eval_loaders[0], eval_loaders[1], eval_loaders[2])
+		evaluator.eval(train_acc = train_acc, test_acc= test_acc, train_nll=running_xent, test_nll= test_nll, train_kld = running_kld, test_kld = test_kld)
+		
+		log_str = '%s [%6d steps in (%4d epochs) ] loss: %.6f, train_xentropy: %.6f, train_kld: %.6f, beta:%.3E, test_xentropy: %.6f, text_kld:%.6f, %s' % \
+		          (datetime.now().strftime("%H:%M:%S.%f"), n_step, e + 1, running_loss, running_xent, running_kld, beta, test_nll, test_kld, train_info)
+
 		print(log_str)
 		logging += log_str + '\n'
 		running_xent = 0.0
 		running_kld = 0.0
 		running_loss = 0.0
-		train_acc, valid_acc, test_acc, eval_str = evaluate(model, eval_loaders[0], eval_loaders[1], eval_loaders[2])
+		
+		
 		if valid_acc > best_valid_acc or epoch_end - e <= 20:
 			print('Best validation accuracy has been updated at %4d epoch.' % (e + 1))
 			torch.save(model.state_dict(), MODEL_FILENAME(filename_prefix + '_e' + str(e + 1).zfill(4)))
 			torch.save(optimizer.state_dict(), OPTIM_FILENAME(filename_prefix + '_e' + str(e + 1).zfill(4)))
 			best_valid_acc = valid_acc
 		logging += eval_str + '\n'
+
 	print('Last update is stored.')
 	print(os.path.join(SAVE_DIR, MODEL_FILENAME(filename_prefix)))
 	torch.save(model.state_dict(), MODEL_FILENAME(filename_prefix))
 	torch.save(optimizer.state_dict(), OPTIM_FILENAME(filename_prefix))
+
+	evaluator.plot(FIG_SAVE_DIR)
 
 	logging += train_info + '\n' + model_prior_info
 
@@ -229,25 +239,58 @@ def load_data(data_type, batch_size, num_workers, use_gpu):
 def evaluate(model, train_loader_eval, valid_loader, test_loader):
 	model_status = model.training
 	model.eval()
-	train_pred, train_output = deterministic_prediction(model, train_loader_eval)
-	if valid_loader is not None:
-		valid_pred, valid_output = deterministic_prediction(model, valid_loader)
-	test_pred, test_output = deterministic_prediction(model, test_loader)
-	train_acc = float((train_pred == train_output).sum()) / float(train_output.size(0))
-	if valid_loader is not None:
-		valid_acc = float((valid_pred == valid_output).sum()) / float(valid_output.size(0))
-	else:
-		valid_acc = None
-	test_acc = float((test_pred == test_output).sum()) / float(test_output.size(0))
-	model.train(model_status)
 
-	if valid_loader is not None:
-		accuracy_info = 'Train : %4.2f%% / Valid : %4.2f%% / Test : %4.2f%%' % (train_acc * 100.0, valid_acc * 100.0, test_acc * 100.0)
-	else:
-		accuracy_info = 'Train : %4.2f%% / Test : %4.2f%%' % (train_acc * 100.0, test_acc * 100.0)
+	with torch.no_grad():
 
-	print(accuracy_info)
-	return train_acc, valid_acc, test_acc, accuracy_info
+		criterion = nn.CrossEntropyLoss(size_average=True)
+
+		n_data = len(test_loader.sampler)
+		n_step = 0
+		running_rate = 0.01
+		running_xent = 0.0
+		running_kld = 0.0
+
+		for b, data in enumerate(test_loader):
+			# get the inputs
+			inputs, outputs = data
+			if next(model.parameters()).is_cuda:
+				inputs = inputs.cuda()
+				outputs = outputs.cuda()
+
+			pred = model(inputs)
+			xent = criterion(pred, outputs)
+			kld = model.kl_divergence() / float(n_data)
+
+			if torch.isinf(kld):
+				raise RuntimeError("KL divergence is infinite. It is likely that ive is zero and is passed to log.")
+			if torch.isnan(kld):
+				model.kl_divergence()
+				raise RuntimeError("KL divergence is Nan.")
+			n_step += 1
+
+			# print statistics
+			running_xent = running_rate * float(xent) + (1 - running_rate) * running_xent
+			running_kld = running_rate * float(kld) + (1 - running_rate) * running_kld
+
+		train_pred, train_output = deterministic_prediction(model, train_loader_eval)
+		if valid_loader is not None:
+			valid_pred, valid_output = deterministic_prediction(model, valid_loader)
+		test_pred, test_output = deterministic_prediction(model, test_loader)
+		train_acc = float((train_pred == train_output).sum()) / float(train_output.size(0))
+		if valid_loader is not None:
+			valid_acc = float((valid_pred == valid_output).sum()) / float(valid_output.size(0))
+		else:
+			valid_acc = None
+		test_acc = float((test_pred == test_output).sum()) / float(test_output.size(0))
+		model.train(model_status)
+
+		if valid_loader is not None:
+			accuracy_info = 'Train : %4.2f%% / Valid : %4.2f%% / Test : %4.2f%%' % (train_acc * 100.0, valid_acc * 100.0, test_acc * 100.0)
+		else:
+			accuracy_info = 'Train : %4.2f%% / Test : %4.2f%%' % (train_acc * 100.0, test_acc * 100.0)
+
+		print(accuracy_info)
+		return train_acc, valid_acc, test_acc, accuracy_info, running_kld, running_xent
 
 
 def double_layer_logmode_mask(layer, row_threshold, col_threshold):
