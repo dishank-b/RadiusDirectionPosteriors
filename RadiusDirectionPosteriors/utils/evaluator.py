@@ -1,10 +1,11 @@
 import torch
 import numpy as np
-import matplotlib.pyplot as plot
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 import seaborn as sns
 import os
 
-# sns.set_theme()
  
 class Evaluator():
     def __init__(self):
@@ -16,29 +17,35 @@ class Evaluator():
         for key in dic.keys():
             self.dict[key].append(dic[key])
 
-        # print(self.dict)
+    def save(self, dir):
+        for key in self.dict.keys():
+            self.dict[key] = np.array(self.dict[key])
+        arr = np.array([self.dict[key] for key in ["train_acc", "test_acc",
+                    "train_nll", "test_nll",
+                    "train_kld", "test_kld"]])
+        np.save(os.path.join(dir, "logs.npy"), arr)
     
     def plot(self, dir):
         sns.lineplot(data=self.dict["train_acc"], label="train")
         sns.lineplot(data=self.dict["test_acc"], label="test")
-        plt.set_ylabel("Accuracy")
-        plt.set_xlabel("Epochs")
+        plt.ylabel("Accuracy")
+        plt.xlabel("Epochs")
         plt.legend()
         plt.savefig(os.path.join(dir, "acc.png"))
         plt.clf()
 
         sns.lineplot(data=self.dict["train_nll"], label="train")
         sns.lineplot(data=self.dict["test_nll"], label="test")
-        plt.set_ylabel("NLL")
-        plt.set_xlabel("Epochs")
+        plt.ylabel("NLL")
+        plt.xlabel("Epochs")
         plt.legend()
         plt.savefig(os.path.join(dir, "nll.png"))
         plt.clf()
 
         sns.lineplot(data=self.dict["train_kld"], label="train")
         sns.lineplot(data=self.dict["test_kld"], label="test")
-        plt.set_ylabel("KLD")
-        plt.set_xlabel("Epochs")
+        plt.ylabel("KLD")
+        plt.xlabel("Epochs")
         plt.legend()
         plt.savefig(os.path.join(dir, "kld.png"))
         plt.clf()

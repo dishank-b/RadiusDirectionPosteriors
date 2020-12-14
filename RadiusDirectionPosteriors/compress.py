@@ -184,6 +184,7 @@ def train(model, optimizer, train_loader, begin_step, epoch_begin, epoch_end, be
 	torch.save(model.state_dict(), MODEL_FILENAME(filename_prefix))
 	torch.save(optimizer.state_dict(), OPTIM_FILENAME(filename_prefix))
 
+	evaluator.save(FIG_SAVE_DIR)
 	evaluator.plot(FIG_SAVE_DIR)
 
 	logging += train_info + '\n' + model_prior_info
