@@ -27,7 +27,7 @@ EXP_INFO_FILENAME = lambda filename_prefix: os.path.join(SAVE_DIR, filename_pref
 LOG_FILENAME = lambda filename_prefix: os.path.join(SAVE_DIR, filename_prefix + '_log.txt')
 
 
-def train_initiate(data_type, model_type, init_hyper, prior_info, n_epoch, lr, batch_size=32, num_workers=4, use_gpu=False, load_pretrain=None):
+def train_initiate(data_type, model_type, init_hyper, prior_info, n_epoch, lr, batch_size=32, num_workers=4, use_gpu=False, load_pretrain=None, optim='Adam'):
 	prior_type, prior_hyper = prior_info
 	prior_info_str = prior_type + '-'
 	for k in sorted(prior_hyper.keys()):
@@ -43,6 +43,7 @@ def train_initiate(data_type, model_type, init_hyper, prior_info, n_epoch, lr, b
 			load_vgg16_bn_to_double(model, load_pretrain)
 		elif model_type in ['VGG16-BN']:
 			load_vgg16_bn_to_radial(model, load_pretrain)
+	exp_filename_prefix = ' '.join([data_type, str(lr), str(batch_size), optim])
 	exp_filename_prefix = '_'.join([data_type, model._get_name(), prior_info_str, 'E' + str(n_epoch).zfill(4), time_tag])
 	print(exp_filename_prefix)
 	train_loader, valid_loader, test_loader, train_loader_eval = load_data(data_type=data_type, batch_size=batch_size, num_workers=num_workers, use_gpu=use_gpu)
@@ -53,7 +54,12 @@ def train_initiate(data_type, model_type, init_hyper, prior_info, n_epoch, lr, b
 	else:
 		annealing_steps = float(100.0 * math.ceil(len(train_loader.dataset) / batch_size))
 		beta_func = lambda s: min(s, annealing_steps) / annealing_steps
-	optimizer = optim.Adam(model.parameters(), lr=lr)
+	if optim == "Adam":
+		optimizer = optim.Adam(model.parameters(), lr=lr)
+	elif optim == "AMSGrad"
+		optimizer = optim.Adam(model.parameters(), lr=lr, amsgrad=True)
+	elif optim == "SGD":
+		optimizer = optim.SGD(model.parameters(), lr=lr)
 
 	model_hyperparam_info = model.init_hyperparam_value()
 	print(model_hyperparam_info)
