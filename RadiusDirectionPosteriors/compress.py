@@ -13,6 +13,7 @@ import torch.optim as optim
 import torch.cuda as cuda
 from utils.dir_utils import exp_dir
 from utils.evaluator import Evaluator
+from utils.evaluator import calib
 # from vgg16_bn_init import load_vgg16_bn_to_double, load_vgg16_bn_to_radial
 
 
@@ -159,8 +160,9 @@ def train(model, optimizer, train_loader, begin_step, epoch_begin, epoch_end, be
 			running_kld = running_rate * float(kld) + (1 - running_rate) * running_kld
 			running_loss = running_rate * float(loss) + (1 - running_rate) * running_loss
 
-		train_acc, valid_acc, test_acc, eval_str, test_kld, test_nll = evaluate(model, eval_loaders[0], eval_loaders[1], eval_loaders[2])
+		train_acc, valid_acc, test_acc, eval_str, test_kld, test_nll, acc, conf = evaluate(model, eval_loaders[0], eval_loaders[1], eval_loaders[2])
 		evaluator.eval(train_acc = train_acc, test_acc= test_acc, train_nll=running_xent, test_nll= test_nll, train_kld = running_kld, test_kld = test_kld)
+		evaluator.plot_calib(FIG_SAVE_DIR, acc, conf)
 		
 		log_str = '%s [%6d steps in (%4d epochs) ] loss: %.6f, train_xentropy: %.6f, train_kld: %.6f, beta:%.3E, test_xentropy: %.6f, text_kld:%.6f, %s' % \
 		          (datetime.now().strftime("%H:%M:%S.%f"), n_step, e + 1, running_loss, running_xent, running_kld, beta, test_nll, test_kld, train_info)
@@ -276,10 +278,12 @@ def evaluate(model, train_loader_eval, valid_loader, test_loader):
 			running_xent = running_rate * float(xent) + (1 - running_rate) * running_xent
 			running_kld = running_rate * float(kld) + (1 - running_rate) * running_kld
 
-		train_pred, train_output = deterministic_prediction(model, train_loader_eval)
+		train_pred, train_prob, train_output = deterministic_prediction(model, train_loader_eval)
+		# acc, conf = calib(train_pred, train_output, train_prob)
 		if valid_loader is not None:
-			valid_pred, valid_output = deterministic_prediction(model, valid_loader)
-		test_pred, test_output = deterministic_prediction(model, test_loader)
+			valid_pred, val_prob, valid_output = deterministic_prediction(model, valid_loader)
+		test_pred, test_prob, test_output = deterministic_prediction(model, test_loader)
+		acc, conf = calib(test_pred.numpy(), test_output.numpy(), test_prob.numpy())
 		train_acc = float((train_pred == train_output).sum()) / float(train_output.size(0))
 		if valid_loader is not None:
 			valid_acc = float((valid_pred == valid_output).sum()) / float(valid_output.size(0))
@@ -294,7 +298,7 @@ def evaluate(model, train_loader_eval, valid_loader, test_loader):
 			accuracy_info = 'Train : %4.2f%% / Test : %4.2f%%' % (train_acc * 100.0, test_acc * 100.0)
 
 		print(accuracy_info)
-		return train_acc, valid_acc, test_acc, accuracy_info, running_kld, running_xent
+		return train_acc, valid_acc, test_acc, accuracy_info, running_kld, running_xent, acc, conf
 
 
 def double_layer_logmode_mask(layer, row_threshold, col_threshold):
@@ -345,6 +349,7 @@ def deterministic_prediction(model, data_loader):
 	assert 'Random' not in data_loader.sampler.__class__.__name__
 	output_data = torch.empty((0,)).long()
 	pred = torch.empty((0,))
+
 	if is_cuda:
 		output_data = output_data.cuda()
 		pred = pred.cuda()
@@ -360,7 +365,7 @@ def deterministic_prediction(model, data_loader):
 		ind += batch_size
 
 	model.deterministic_forward(False)
-	return pred.argmax(dim=1), output_data
+	return pred.argmax(dim=1), nn.functional.softmax(pred, dim=1).max(dim=1)[0], output_data
 
 
 def sample_prediction(model, data_loader, n_pred_samples):

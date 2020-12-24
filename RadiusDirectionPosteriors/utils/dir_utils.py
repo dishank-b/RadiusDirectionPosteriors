@@ -14,7 +14,7 @@ def data_dir():
 
 
 def exp_dir():
-    return "/home/dishank/RadiusDirectionPosteriors/logs/mnist_their"
+    return "/home/dishank/RadiusDirectionPosteriors/logs/fashion_hyper"
     if socket.gethostname() == 'peters-MBP':
         return '/Users/changyong/Experiments/BayesianNeuralNetwork'
     elif socket.gethostname() == 'DTA160000':
