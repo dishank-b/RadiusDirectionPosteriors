@@ -61,5 +61,5 @@ if __name__ == '__main__':
 		exp_filename = train_continue(data_type=data_type, model_type=args.model_type, model_filename=args.model_file, n_epoch=args.epochs, lr=args.lr, num_workers=1, use_gpu=args.gpu)
 		print(exp_filename)
 	else:
-		exp_filename = train_initiate(data_type=data_type, model_type=args.model_type, init_hyper=INIT_HYPER, prior_info=prior_info_from_json(args.prior_file), n_epoch=args.epochs, lr=args.lr, batch_size=args.batch_size, num_workers=1, use_gpu=args.gpu, load_pretrain=args.load_pretrain, optim=args.optim)
+		exp_filename = train_initiate(data_type=data_type, model_type=args.model_type, init_hyper=INIT_HYPER, prior_info=prior_info_from_json(args.prior_file), n_epoch=args.epochs, lr=args.lr, batch_size=args.batch_size, num_workers=1, use_gpu=args.gpu, load_pretrain=args.load_pretrain, opt=args.optim)
 		print(exp_filename)

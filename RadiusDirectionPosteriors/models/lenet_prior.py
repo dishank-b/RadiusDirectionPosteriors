@@ -45,29 +45,31 @@ class LeNet5DoublePrior(object):
         self.fc1_prior = {'radius': (prior_type, {'tau_global': tau_fc_global, 'tau_local': tau_fc_local})}
         self.fc2_prior = {'radius': (prior_type, {'tau_global': tau_fc_global, 'tau_local': tau_fc_local})}
 
-
 class LeNet5Prior(object):
 
     def __init__(self, prior_info):
         prior_type, prior_hyper = prior_info
         self.conv1_prior = None
         self.conv2_prior = None
+        self.conv3_prior = None
         self.fc1_prior = None
         self.fc2_prior = None
         self._prior_halfcauchy(prior_type, prior_hyper)
 
-        self.conv1_prior['direction'] = ('vMF', {'concentration': ml_kappa(dim=1 * 25, eps=PRIOR_EPSILON)})
-        self.conv2_prior['direction'] = ('vMF', {'concentration': ml_kappa(dim=20 * 25, eps=PRIOR_EPSILON)})
-        self.fc1_prior['direction'] = ('vMF', {'concentration': ml_kappa(dim=500, eps=PRIOR_EPSILON)})
+        self.conv1_prior['direction'] = ('vMF', {'concentration': ml_kappa(dim=1 * 9, eps=PRIOR_EPSILON)})
+        self.conv2_prior['direction'] = ('vMF', {'concentration': ml_kappa(dim=32 * 9, eps=PRIOR_EPSILON)})
+        self.conv3_prior['direction'] = ('vMF', {'concentration': ml_kappa(dim=64 * 9, eps=PRIOR_EPSILON)})
+        self.fc1_prior['direction'] = ('vMF', {'concentration': ml_kappa(dim=64, eps=PRIOR_EPSILON)})
         self.fc2_prior['direction'] = ('vMF', {'concentration': ml_kappa(dim=10, eps=PRIOR_EPSILON)})
 
     def __call__(self):
-        return self.conv1_prior, self.conv2_prior, self.fc1_prior, self.fc2_prior
+        return self.conv1_prior, self.conv2_prior, self.conv3_prior, self.fc1_prior, self.fc2_prior
 
     def __repr__(self):
         prior_info_str_list = ['***PRIORS***']
         prior_info_str_list.append('Conv1 : ' + prior_summary(self.conv1_prior))
         prior_info_str_list.append('Conv2 : ' + prior_summary(self.conv2_prior))
+        prior_info_str_list.append('Conv3 : ' + prior_summary(self.conv3_prior))
         prior_info_str_list.append('FC1 : ' + prior_summary(self.fc1_prior))
         prior_info_str_list.append('FC2 : ' + prior_summary(self.fc2_prior))
         return '\n'.join(prior_info_str_list)
@@ -79,9 +81,9 @@ class LeNet5Prior(object):
         tau_conv_global = prior_hyper['tau_conv_global']
         self.conv1_prior = {'radius': (prior_type, {'tau_global': tau_conv_global, 'tau_local': tau_conv_local})}
         self.conv2_prior = {'radius': (prior_type, {'tau_global': tau_conv_global, 'tau_local': tau_conv_local})}
+        self.conv3_prior = {'radius': (prior_type, {'tau_global': tau_conv_global, 'tau_local': tau_conv_local})}
         self.fc1_prior = {'radius': (prior_type, {'tau_global': tau_fc_global, 'tau_local': tau_fc_local})}
         self.fc2_prior = {'radius': (prior_type, {'tau_global': tau_fc_global, 'tau_local': tau_fc_local})}
-
 
 class LeNetFCDoublePrior(object):
 

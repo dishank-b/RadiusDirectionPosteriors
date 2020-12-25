@@ -188,7 +188,7 @@ def _approximate_log_iv_bound(nu, z):
 def _approximate_log_iv_series(nu, z):
     fractional_order = nu % 1
     assert fractional_order in [0, 0.5]
-    init_ive_value = torch.log(scipy.special.ive(fractional_order, z.clamp(max=SCIPY_IVE_UPPER_BOUND)))
+    init_ive_value = torch.log(scipy.special.ive(fractional_order, z.cpu().clamp(max=SCIPY_IVE_UPPER_BOUND)))
     if z.is_cuda:
         init_ive_value = init_ive_value.cuda()
     init_value = init_ive_value + z
